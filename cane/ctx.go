@@ -15,6 +15,7 @@ type Ctx struct {
 	// request data
 	Path   string
 	Method string
+	Vars   map[string]string
 	// response data
 	StatusCode int
 }
@@ -27,6 +28,10 @@ func newCtx(w http.ResponseWriter, r *http.Request) *Ctx {
 		Path:   r.URL.Path,
 		Method: r.Method,
 	}
+}
+
+func (c *Ctx) Var(key string) string {
+	return c.Vars[key]
 }
 
 // responseWriter

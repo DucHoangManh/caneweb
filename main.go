@@ -2,6 +2,7 @@ package main
 
 import (
 	"caneweb/cane"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -10,6 +11,8 @@ func main() {
 	server := cane.New()
 	server.GET("/hello", cane.HandleFunc(hello))
 	server.POST("/post", cane.HandleFunc(createPost))
+	server.GET("/hi/:name/say", cane.HandleFunc(sayHi))
+	fmt.Println("Server start at localhost:5445...")
 	log.Fatal(server.Run(":5445"))
 }
 
@@ -24,4 +27,8 @@ func createPost(c *cane.Ctx) {
 		"post_title":  title,
 		"description": desc,
 	})
+}
+
+func sayHi(c *cane.Ctx) {
+	c.String(http.StatusOK, "Hi there, %s", c.Var("name"))
 }
