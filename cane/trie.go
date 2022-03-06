@@ -1,6 +1,9 @@
 package cane
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // a prefix tree with path can look like this for example
 //                    GET
@@ -48,6 +51,10 @@ func (n *node) matchAllChild(part string) []*node {
 func (n *node) insert(pattern string, parts []string, height int) {
 	// final node in path
 	if len(parts) == height {
+		if n.pattern != "" {
+			// panic if route conflict happens
+			panic(fmt.Sprintf("route conflict %s, origin %s", pattern, n.pattern))
+		}
 		n.pattern = pattern
 		return
 	}
@@ -83,4 +90,17 @@ func (n *node) search(parts []string, height int) *node {
 		}
 	}
 	return nil
+}
+
+func (n *node) travel(list *([]*node)) {
+	if n.pattern != "" {
+		*list = append(*list, n)
+	}
+	for _, child := range n.children {
+		child.travel(list)
+	}
+}
+
+func (n *node) String() string {
+	return fmt.Sprintf("node{pattern=%s, part=%s, isWild=%t}", n.pattern, n.part, n.isWild)
 }
